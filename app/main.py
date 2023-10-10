@@ -27,9 +27,10 @@ async def create_question(payload: schemas.QuestionCreatePayload, db: Session = 
 
     while True:
         exist_questions = crud.get_questions_by_text(db, texts=[candidate.get('question') for candidate in candidates])
-        if exist_questions.count() == 0:
+        exist_questions_count = exist_questions.count()
+        if exist_questions_count == 0:
             break
-        new_candidates = await fetch_random_question(exist_questions.count())
+        new_candidates = await fetch_random_question(exist_questions_count)
         for new_candidate in new_candidates:
             for candidate_id, candidate in enumerate(candidates):
                 if candidate.get('question') in [j.text_questionq for j in exist_questions]:
